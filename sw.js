@@ -1,5 +1,5 @@
 const V = 'v3', SHELL = 'shell-' + V, RUN = 'run-' + V;
-const FILES = ['./', 'index.html', 'app.js', 'styles.css', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+const FILES = ['./', 'index.html', 'app.js', 'styles.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(SHELL).then(c => c.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(
@@ -25,7 +25,7 @@ self.addEventListener('sync', e => {
 
 self.addEventListener('push', e => {
   const d = e.data ? e.data.json() : { title: 'Recordatorio', body: '' };
-  e.waitUntil(self.registration.showNotification(d.title, { body: d.body, icon: 'icons/icon-192.png', tag: d.tag, data: { url: './' } }));
+  e.waitUntil(self.registration.showNotification(d.title, { body: d.body, icon: 'icon-192.png', tag: d.tag, data: { url: './' } }));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();

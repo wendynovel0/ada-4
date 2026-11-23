@@ -144,7 +144,7 @@ addEventListener('offline', () => { estado(); toast('Sin conexión: tus cambios 
 /* ---------- Notificaciones locales (Notifications API) ---------- */
 async function notificar(a) {
   const reg = await navigator.serviceWorker.ready;
-  reg.showNotification('⏰ ' + a.title, { body: a.desc || 'Recordatorio', icon: 'icons/icon-192.png', tag: a.id, data: { url: './' } });
+  reg.showNotification('⏰ ' + a.title, { body: a.desc || 'Recordatorio', icon: 'icon-192.png', tag: a.id, data: { url: './' } });
 }
 $('btn-notif').onclick = async () => {
   const p = await Notification.requestPermission();

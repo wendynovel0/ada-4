@@ -9,7 +9,11 @@ const user = r => (db.users[r.get('x-client-id') || 'anon'] ||= { activities: {}
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+const PUBLIC = new Set(['index.html', 'app.js', 'sw.js', 'styles.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png']);
+app.use((req, res, next) => {                    // solo se sirven los archivos de la app (no server.js ni data.json)
+  const f = req.path === '/' ? 'index.html' : req.path.slice(1);
+  PUBLIC.has(f) ? res.sendFile(path.join(__dirname, f)) : next();
+});
 app.get('/api/vapid', (_, res) => res.json({ key: db.vapid.publicKey }));
 app.post('/api/subscribe', (req, res) => {
   const u = user(req); if (!u.subs.some(s => s.endpoint === req.body.endpoint)) u.subs.push(req.body);

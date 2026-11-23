@@ -25,3 +25,7 @@ Si solo usas hosting estático (Netlify, GitHub Pages) la app funciona completa 
 
 ## Guion sugerido para el video (2–3 min)
 URL HTTPS → crear/editar/eliminar → modo avión y repetir → reconectar y ver sincronización → notificación → push de prueba → reporte Lighthouse.
+
+
+## Estructura
+Todos los archivos están en la raíz del repositorio (index.html, app.js, sw.js, styles.css, manifest.webmanifest, iconos y server.js). Solo front en GitHub Pages: Settings → Pages → Deploy from branch → main / (root). Sync y push requieren el backend (Render).
