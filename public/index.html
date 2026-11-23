@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Actividades</title>
+<meta name="description" content="Tus actividades y recordatorios, con o sin conexión.">
+<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <div>
+      <h1>Actividades</h1>
+      <p id="estado" role="status"><span class="dot"></span><span id="est-txt">Cargando…</span></p>
+    </div>
+    <button id="btn-ajustes" class="ico" type="button" aria-label="Ajustes">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+    </button>
+  </div>
+</header>
+<main class="wrap">
+  <label for="buscar" class="sr">Buscar actividades</label>
+  <input id="buscar" type="search" placeholder="Buscar" autocomplete="off">
+  <div class="tabs" role="group" aria-label="Filtrar">
+    <button type="button" data-f="todas" aria-pressed="true">Todas</button>
+    <button type="button" data-f="pend" aria-pressed="false">Pendientes</button>
+    <button type="button" data-f="hechas" aria-pressed="false">Hechas</button>
+  </div>
+  <div id="lista"></div>
+</main>
+<button id="fab" type="button" aria-label="Nueva actividad">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<dialog id="dlg-form" aria-labelledby="t-form"><div class="sheet">
+  <h2 id="t-form">Nueva actividad</h2>
+  <form id="form">
+    <input type="hidden" id="id">
+    <label for="titulo">Título</label>
+    <input id="titulo" required maxlength="80" placeholder="¿Qué necesitas hacer?" autocomplete="off">
+    <label for="desc">Notas</label>
+    <textarea id="desc" rows="2" placeholder="Opcional"></textarea>
+    <label for="fecha">Recordatorio</label>
+    <input id="fecha" type="datetime-local">
+    <div class="fila">
+      <button type="button" id="cancelar" class="btn ghost">Cancelar</button>
+      <button type="submit" id="guardar" class="btn">Guardar</button>
+    </div>
+  </form>
+</div></dialog>
+
+<dialog id="dlg-aj" aria-labelledby="t-aj"><div class="sheet">
+  <h2 id="t-aj">Ajustes</h2>
+  <div class="row"><div><strong>Notificaciones</strong><small>Avisos locales cuando vence un recordatorio.</small></div><button id="btn-notif" class="btn ghost" type="button">Activar</button></div>
+  <div class="row"><div><strong>Push</strong><small>Avisos del servidor, incluso con la app cerrada.</small></div><button id="btn-push" class="btn ghost" type="button">Activar</button></div>
+  <div class="row"><div><strong>Probar push</strong><small>Envía una notificación de prueba.</small></div><button id="btn-test" class="btn ghost" type="button">Enviar</button></div>
+  <div class="row" id="row-install" hidden><div><strong>Instalar</strong><small>Añádela a tu pantalla de inicio.</small></div><button id="btn-install" class="btn ghost" type="button">Instalar</button></div>
+  <div class="fila"><button type="button" id="cerrar-aj" class="btn">Listo</button></div>
+</div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
