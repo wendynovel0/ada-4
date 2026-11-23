@@ -8,8 +8,12 @@ const save = () => fs.writeFileSync(FILE, JSON.stringify(db));
 const user = r => (db.users[r.get('x-client-id') || 'anon'] ||= { activities: {}, subs: [] });
 
 const app = express();
+app.use((req, res, next) => {                    // CORS: permite usar el front desde GitHub Pages
+  res.set({ 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type, x-client-id', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS' });
+  req.method === 'OPTIONS' ? res.sendStatus(204) : next();
+});
 app.use(express.json());
-const PUBLIC = new Set(['index.html', 'app.js', 'sw.js', 'styles.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png']);
+const PUBLIC = new Set(['index.html', 'app.js', 'sw.js', 'styles.css', 'manifest.json', 'icon-192.png', 'icon-512.png']);
 app.use((req, res, next) => {                    // solo se sirven los archivos de la app (no server.js ni data.json)
   const f = req.path === '/' ? 'index.html' : req.path.slice(1);
   PUBLIC.has(f) ? res.sendFile(path.join(__dirname, f)) : next();

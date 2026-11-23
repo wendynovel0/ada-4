@@ -2,6 +2,10 @@
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let db;
+// URL del backend (Render), sin diagonal final. Ej: "https://mi-app.onrender.com".
+// Vacío: en GitHub Pages la app funciona solo local (sin sync ni push); en tu propio servidor usa el mismo origen.
+const API_URL = "";
+const API = API_URL || (location.hostname.endsWith("github.io") ? null : location.origin);
 const CID = localStorage.cid || (localStorage.cid = crypto.randomUUID());
 
 /* ---------- IndexedDB ---------- */
@@ -64,7 +68,7 @@ async function pintar() {              // Read
 }
 function estado(p = 0) {
   $('estado').dataset.on = navigator.onLine ? '1' : '0';
-  $('est-txt').textContent = (navigator.onLine ? 'En línea' : 'Sin conexión') + (p ? ` · ${p} por sincronizar` : '');
+  $('est-txt').textContent = (navigator.onLine ? 'En línea' : 'Sin conexión') + (p && API ? ` · ${p} por sincronizar` : '');
 }
 function toast(m) {
   const t = $('toast'); t.textContent = m; t.classList.add('on');
@@ -116,11 +120,11 @@ $('btn-install').onclick = async () => { dip?.prompt(); await dip?.userChoice; $
 /* ---------- Sincronización ---------- */
 let syncing = false;
 async function sync() {
-  if (syncing || !navigator.onLine) return;
+  if (!API || syncing || !navigator.onLine) return;
   syncing = true;
   try {
     const changes = await getAll('outbox');
-    const r = await fetch('/api/sync', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-client-id': CID }, body: JSON.stringify({ changes }) });
+    const r = await fetch(API + '/api/sync', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-client-id': CID }, body: JSON.stringify({ changes }) });
     if (!r.ok) throw new Error(r.status);
     const { activities } = await r.json();
     const t = db.transaction(['activities', 'outbox'], 'readwrite');
@@ -162,16 +166,17 @@ setInterval(async () => {
 /* ---------- Push (ampliación) ---------- */
 const b64 = s => Uint8Array.from(atob((s + '='.repeat((4 - s.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
 $('btn-push').onclick = async () => {
+  if (!API) return toast('Push requiere el backend: configura API_URL en app.js');
   try {
     if (await Notification.requestPermission() !== 'granted') return;
-    const { key } = await (await fetch('/api/vapid')).json();
+    const { key } = await (await fetch(API + '/api/vapid')).json();
     const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(key) });
-    await fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-client-id': CID }, body: JSON.stringify(sub) });
+    await fetch(API + '/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-client-id': CID }, body: JSON.stringify(sub) });
     $('btn-push').textContent = 'Activo ✓';
   } catch (e) { toast('No se pudo activar push: ' + e.message); }
 };
-$('btn-test').onclick = () => fetch('/api/push-test', { method: 'POST', headers: { 'x-client-id': CID } }).then(() => toast('Push de prueba enviado')).catch(() => toast('Sin conexión con el servidor'));
+$('btn-test').onclick = () => !API ? toast('Push requiere el backend: configura API_URL en app.js') : fetch(API + '/api/push-test', { method: 'POST', headers: { 'x-client-id': CID } }).then(() => toast('Push de prueba enviado')).catch(() => toast('Sin conexión con el servidor'));
 
 /* ---------- Arranque ---------- */
 (async () => {

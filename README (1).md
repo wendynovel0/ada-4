@@ -28,4 +28,8 @@ URL HTTPS → crear/editar/eliminar → modo avión y repetir → reconectar y v
 
 
 ## Estructura
-Todos los archivos están en la raíz del repositorio (index.html, app.js, sw.js, styles.css, manifest.webmanifest, iconos y server.js). Solo front en GitHub Pages: Settings → Pages → Deploy from branch → main / (root). Sync y push requieren el backend (Render).
+Todos los archivos están en la raíz del repositorio (index.html, app.js, sw.js, styles.css, manifest.json, iconos y server.js). Solo front en GitHub Pages: Settings → Pages → Deploy from branch → main / (root). Sync y push requieren el backend (Render).
+
+## GitHub Pages + Render
+Si el front está en GitHub Pages y el backend en Render, pon la URL de Render en  (arriba de app.js). Sin , en github.io la app funciona local y sin sync/push.
+Si cambias archivos, recarga con Ctrl+Shift+R o borra el Service Worker (DevTools → Application → Unregister) para no ver la versión vieja en caché.

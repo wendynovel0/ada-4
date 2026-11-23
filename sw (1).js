@@ -1,5 +1,5 @@
-const V = 'v3', SHELL = 'shell-' + V, RUN = 'run-' + V;
-const FILES = ['./', 'index.html', 'app.js', 'styles.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
+const V = 'v4', SHELL = 'shell-' + V, RUN = 'run-' + V;
+const FILES = ['./', 'index.html', 'app.js', 'styles.css', 'manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => e.waitUntil(caches.open(SHELL).then(c => c.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(
